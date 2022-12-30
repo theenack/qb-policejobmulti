@@ -1,170 +1,68 @@
-# qb-policejob
-Police Job for QB-Core Framework :police_officer:
-
-# License
-
-    QBCore Framework
-    Copyright (C) 2021 Joshua Eger
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>
-
-## Dependencies
-- [qb-core](https://github.com/qbcore-framework/qb-core)
-- [qb-bossmenu](https://github.com/qbcore-framework/qb-bossmenu) - For the boss menu
-- [qb-garages](https://github.com/qbcore-framework/qb-garages) - For the vehicle spawner
-- [qb-clothing](https://github.com/qbcore-framework/qb-clothing) - For the locker room
-- [qb-phone](https://github.com/qbcore-framework/qb-phone) - For the MEOS app and notifications etc.
-- [qb-log](https://github.com/qbcore-framework/qb-logs) - For logging certain events
-- [qb-menu](https://github.com/qbcore-framework/qb-menu) - For the vehicle menus
-- [qb-input](https://github.com/qbcore-framework/qb-input) - For accessing evidence stashes
-
-
-## Screenshots
-![On Duty / Off Duty](https://imgur.com/KO2ydlt.png)
-![Whitelisted Police Armory](https://imgur.com/TQVIYFb.png)
-![Whitelisted Police Stash](https://imgur.com/Hh2fbs4.png)
-![Vehicle Spawner](https://imgur.com/plgZ9oD.png)
-![Helicopter Spawner](https://imgur.com/jE2IoqK.png)
-![Fingerprint Scan](https://imgur.com/btmurxh.png)
-![Evidence Stash](https://imgur.com/KBOoUy5.png)
-![Spike Placing](https://imgur.com/mTN6c0h.png)
-![Object Placing](https://imgur.com/7Jate4f.png)
-![Police Alert](https://imgur.com/rAIiWYH.png)
-![Securty Cam](https://imgur.com/vFr8nWf.png)
-
-## Features
-- Classical requirements like on duty/off duty, clothing, vehicle, stash etc.
-- Citizen ID based armory (Whitelisted)
-- Fingerprint test
-- Evidence locker (stash)
-- Whitelisted vehicles
-- Speed radars across the map
-- Stormram
-- Impounding player vehicle (permanent / for an amount of money)
-- Integrated jail system
-- Bullet casings
-- GSR
-- Blood drop
-- Evidence bag & Money bag
-- Police radar
-- Handcuff as an item (Can used via command too. Check Commands section.)
-- Emergency services can see each other on map
-
-### Commands
-- /spikestrip - Places spike strip on ground.
-- /pobject [pion/barier/schotten/tent/light/delete] - Places or deletes an object on/from ground.
-- /cuff - Cuffs/Uncuffs nearby player
-- /escort - Escorts nearby plyer.
-- /callsign [text] - Sets the player a callsign on database.
-- /clearcasings - Clears nearby bullet casings.
-- /jail [id] [time] - Sends a player to the jail.
-- /unjail [id] - Takes the player out of jail.
-- /clearblood - Clears nearby blood drops.
-- /seizecash - Seizes nearby player's cash. (Puts in money bag)
-- /sc - Puts soft cuff on nearby player.
-- /cam [cam] - Shows the selected security cam display.
-- /flagplate [plate] [reason] - Flags the vehicle.
-- /unflagplate [plate] - Removes the flag of a vehicle.
-- /plateinfo [plate] - Displays if a vehicle is marked or not.
-- /depot [price] - Depots nearby vehicle. Player can take it after paying the cost.
-- /impound - Impounds nearby vehicle permanently.
-- /paytow [id] - Makes payment to the tow driver.
-- /paylawyer [id] - Makes payment to the lawyer.
-- /radar - Toggles the police radar.
-- /911 [message] - Sends a report to emergency services.
-- /911r [id] - Used to respond the emergency alerts.
-- /911a [message] - Sends an anonymous report to emergency services (gives no location).
-- /anklet - Places anklet (tracking device) on nearby player.
-- /removeanklet [citizenid] - Removes the anklet from player.
-- /ebutton - Used to respond an emergency alert.
-- /takedrivinglicense - Takes the driving license from nearby player.
-- /takedna [id] - Takes a DNA sample from the player.
-
-## Installation
-### Manual
-- Download the script and put it in the `[qb]` directory.
-- Add the following code to your server.cfg/resouces.cfg
-```
-ensure qb-core
-ensure qb-policejob
-```
-
-## Configuration
-```
 Config = {}
 
-Config.Objects = { -- Objects to be placed with /pobject [object]
+Config.Objects = {
     ["cone"] = {model = `prop_roadcone02a`, freeze = false},
-    ["barier"] = {model = `prop_barrier_work06a`, freeze = true},
-    ["schotten"] = {model = `prop_snow_sign_road_06g`, freeze = true},
+    ["barrier"] = {model = `prop_barrier_work06a`, freeze = true},
+    ["roadsign"] = {model = `prop_snow_sign_road_06g`, freeze = true},
     ["tent"] = {model = `prop_gazebo_03`, freeze = true},
     ["light"] = {model = `prop_worklight_03b`, freeze = true},
 }
 
+Config.MaxSpikes = 5
+
+Config.HandCuffItem = 'handcuffs'
+
+Config.LicenseRank = 2
+
+Config.UseTarget = GetConvar('UseTarget', 'false') == 'true'
 Config.Locations = {
-   ["duty"] = { -- On Duty/Off Duty Marker
-       [1] = vector4(440.085, -974.924, 30.689, 90.654),
-       [2] = vector4(-449.811, 6012.909, 31.815, 90.654),
-   },
-   ["vehicle"] = { -- Vehicle Spawner Marker
-       [1] = vector4(448.159, -1017.41, 28.562, 90.654),
-       [2] = vector4(471.13, -1024.05, 28.17, 274.5),
-       [3] = vector4(-455.39, 6002.02, 31.34, 87.93),
-   },
-   ["stash"] = { -- Stash Marker
-       [1] = vector4(453.075, -980.124, 30.889, 90.654),
-   },
-   ["impound"] = { -- Impounded Vehicles Marker
-       [1] = vector4(436.68, -1007.42, 27.32, 180.0),
-       [2] = vector4(-436.14, 5982.63, 31.34, 136.0),
-   },
-   ["helicopter"] = { -- Helicopter Spawner Marker
-       [1] = vector4(449.168, -981.325, 43.691, 87.234),
-       [2] = vector4(-475.43, 5988.353, 31.716, 31.34),
-   },
-   ["armory"] = { -- Armory Marker
-       [1] = vector4(462.23, -981.12, 30.68, 90.654),
-   },
-   ["trash"] = { -- Trash Marker
-       [1] = vector4(439.0907, -976.746, 30.776, 93.03),
-   },
-   ["fingerprint"] = { -- Fingerprint Scan Marker
-       [1] = vector4(460.9667, -989.180, 24.92, 358.5),
-   },
-   ["evidence"] = { -- Evidence Closet 1 Marker
-       [1] = vector4(442.1722, -996.067, 30.689, 187.5),
-   },
-   ["evidence2"] = { -- Evidence Closet 2 Marker
-       [1] = vector4(451.7031, -973.232, 30.689, 1.741),
-   },
-   ["evidence3"] = { -- Evidence Closet 3 Marker
-       [1] = vector4(455.1456, -985.462, 30.689, 2.854),
-   },
-   ["stations"] = { -- Police Stations Blips
-       [1] = {label = "Police Station", coords = vector4(428.23, -984.28, 29.76, 3.5)},
-       [2] = {label = "Prison", coords = vector4(1845.903, 2585.873, 45.672, 272.249)},
-       [3] = {label = "Police Station Paleto", coords = vector4(-451.55, 6014.25, 31.716, 223.81)},
-   },
+    ["duty"] = {
+        [1] = vector3(440.085, -974.924, 30.689),
+        [2] = vector3(-449.811, 6012.909, 31.815),
+    },
+    ["vehicle"] = {
+        [1] = vector4(448.159, -1017.41, 28.562, 90.654),
+        [2] = vector4(471.13, -1024.05, 28.17, 274.5),
+        [3] = vector4(-455.39, 6002.02, 31.34, 87.93),
+    },
+    ["stash"] = {
+        [1] = vector3(453.075, -980.124, 30.889),
+    },
+    ["impound"] = {
+        [1] = vector3(436.68, -1007.42, 27.32),
+        [2] = vector3(-436.14, 5982.63, 31.34),
+    },
+    ["helicopter"] = {
+        [1] = vector4(449.168, -981.325, 43.691, 87.234),
+        [2] = vector4(-475.43, 5988.353, 31.716, 31.34),
+    },
+    ["armory"] = {
+        [1] = vector3(462.23, -981.12, 30.68),
+    },
+    ["trash"] = {
+        [1] = vector3(439.0907, -976.746, 30.776),
+    },
+    ["fingerprint"] = {
+        [1] = vector3(460.9667, -989.180, 24.92),
+    },
+    ["evidence"] = {
+        [1] = vector3(442.1722, -996.067, 30.689),
+        [2] = vector3(451.7031, -973.232, 30.689),
+        [3] = vector3(455.1456, -985.462, 30.689),
+    },
+    ["stations"] = {
+        [1] = {label = "Police Station", coords = vector4(428.23, -984.28, 29.76, 3.5)},
+        [2] = {label = "Prison", coords = vector4(1845.903, 2585.873, 45.672, 272.249)},
+        [3] = {label = "Police Station Paleto", coords = vector4(-451.55, 6014.25, 31.716, 223.81)},
+    },
 }
 
-Config.ArmoryWhitelist = {} -- Citizen ID Based Armory Whitelist (With Export for Other Scripts)
+Config.ArmoryWhitelist = {}
 
+Config.PoliceHelicopter = "POLMAV"
 
-Config.Helicopter = "POLMAV" -- Model of the Helicopter for Helicopter Spawner
-
-Config.SecurityCameras = { -- Security Cam Locations
-    hideradar = false, -- Don't change
+Config.SecurityCameras = {
+    hideradar = false,
     cameras = {
         [1] = {label = "Pacific Bank CAM#1", coords = vector3(257.45, 210.07, 109.08), r = {x = -25.0, y = 0.0, z = 28.05}, canRotate = false, isOnline = true},
         [2] = {label = "Pacific Bank CAM#2", coords = vector3(232.86, 221.46, 107.83), r = {x = -25.0, y = 0.0, z = -140.91}, canRotate = false, isOnline = true},
@@ -203,68 +101,44 @@ Config.SecurityCameras = { -- Security Cam Locations
     },
 }
 
-Config.AuthorizedVehicles = { -- Police Vehicles and required grade
-	-- Grade 0
-	[0] = {
-		["police"] = "Police Car 1",
-		["police2"] = "Police Car 2",
-		["police3"] = "Police Car 3",
-		["police4"] = "Police Car 4",
-		["policeb"] = "Police Car 5",
-		["policet"] = "Police Car 6",
-		["sheriff"] = "Sheriff Car 1",
-		["sheriff2"] = "Sheriff Car 2",
-	},
-	-- Grade 1
+Config.AuthorizedVehiclesLSPD = {
+    -- LSPD
 	[1] = {
-		["police"] = "Police Car 1",
-		["police2"] = "Police Car 2",
-		["police3"] = "Police Car 3",
-		["police4"] = "Police Car 4",
-		["policeb"] = "Police Car 5",
-		["policet"] = "Police Car 6",
-		["sheriff"] = "Sheriff Car 1",
-		["sheriff2"] = "Sheriff Car 2",
+		["police"] = "Police",
+	},
+}
 
+Config.AuthorizedVehiclesBCSO = {
+    -- BCSO
+	[1] = {
+		["police"] = "Police",
 	},
-	-- Grade 2
-	[2] = {
-		["police"] = "Police Car 1",
-		["police2"] = "Police Car 2",
-		["police3"] = "Police Car 3",
-		["police4"] = "Police Car 4",
-		["policeb"] = "Police Car 5",
-		["policet"] = "Police Car 6",
-		["sheriff"] = "Sheriff Car 1",
-		["sheriff2"] = "Sheriff Car 2",
+}
+
+Config.AuthorizedVehiclesSASP = {
+    -- SASP
+	[1] = {
+		["police"] = "Police",
 	},
-	-- Grade 3
-	[3] = {
-		["police"] = "Police Car 1",
-		["police2"] = "Police Car 2",
-		["police3"] = "Police Car 3",
-		["police4"] = "Police Car 4",
-		["policeb"] = "Police Car 5",
-		["policet"] = "Police Car 6",
-		["sheriff"] = "Sheriff Car 1",
-		["sheriff2"] = "Sheriff Car 2",
+}
+
+Config.AuthorizedVehiclesFBI = {
+    -- FBI
+	[1] = {
+		["police"] = "Police",
 	},
-	-- Grade 4
-	[4] = {
-		["police"] = "Police Car 1",
-		["police2"] = "Police Car 2",
-		["police3"] = "Police Car 3",
-		["police4"] = "Police Car 4",
-		["policeb"] = "Police Car 5",
-		["policet"] = "Police Car 6",
-		["sheriff"] = "Sheriff Car 1",
-		["sheriff2"] = "Sheriff Car 2",
-	}
+}
+
+Config.AuthorizedVehiclesIAA = {
+    -- IAA
+	[1] = {
+		["police"] = "Police",
+	},
 }
 
 Config.WhitelistedVehicles = {}
 
-Config.AmmoLabels = { -- Labels for Weapon Ammo
+Config.AmmoLabels = {
     ["AMMO_PISTOL"] = "9x19mm parabellum bullet",
     ["AMMO_SMG"] = "9x19mm parabellum bullet",
     ["AMMO_RIFLE"] = "7.62x39mm bullet",
@@ -273,7 +147,7 @@ Config.AmmoLabels = { -- Labels for Weapon Ammo
     ["AMMO_SNIPER"] = "Large caliber bullet",
 }
 
-Config.Radars = { -- Radar Locations
+Config.Radars = {
 	vector4(-623.44421386719, -823.08361816406, 25.25704574585, 145.0),
 	vector4(-652.44421386719, -854.08361816406, 24.55704574585, 325.0),
 	vector4(1623.0114746094, 1068.9924316406, 80.903594970703, 84.0),
@@ -287,7 +161,7 @@ Config.Radars = { -- Radar Locations
 	vector4(-823.3688, -1146.980, 8.0, 300.0),
 }
 
-Config.CarItems = { -- Default Trunk Items for Police Vehicles
+Config.CarItems = {
     [1] = {
         name = "heavyarmor",
         amount = 2,
@@ -311,7 +185,7 @@ Config.CarItems = { -- Default Trunk Items for Police Vehicles
     },
 }
 
-Config.Items = { -- Items to be displayed on Armory
+Config.Items = {
     label = "Police Armory",
     slots = 30,
     items = {
@@ -494,4 +368,42 @@ Config.Items = { -- Items to be displayed on Armory
         }
     }
 }
-```
+
+Config.VehicleSettings = {
+    ["car1"] = { --- Model name
+        ["extras"] = {
+            ["1"] = true, -- on/off
+            ["2"] = true,
+            ["3"] = true,
+            ["4"] = true,
+            ["5"] = true,
+            ["6"] = true,
+            ["7"] = true,
+            ["8"] = true,
+            ["9"] = true,
+            ["10"] = true,
+            ["11"] = true,
+            ["12"] = true,
+            ["13"] = true,
+        },
+		["livery"] = 1,
+    },
+    ["car2"] = {
+        ["extras"] = {
+            ["1"] = true,
+            ["2"] = true,
+            ["3"] = true,
+            ["4"] = true,
+            ["5"] = true,
+            ["6"] = true,
+            ["7"] = true,
+            ["8"] = true,
+            ["9"] = true,
+            ["10"] = true,
+            ["11"] = true,
+            ["12"] = true,
+            ["13"] = true,
+        },
+		["livery"] = 1,
+    }
+}
